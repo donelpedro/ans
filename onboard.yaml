@@ -1,0 +1,22 @@
+- name: Gather facts
+  ansible.builtin.setup:
+
+- name: Add this host to Ansible Tower inventory
+  uri:
+    url: "https://YOUR_TOWER_URL/api/v2/inventories/YOUR_INVENTORY_ID/hosts/"
+    method: POST
+    body_format: json
+    body: 
+      name: "{{ ansible_fqdn }}"
+      description: "Automatically added host"
+      variables: 
+        ansible_host: "{{ ansible_default_ipv4.address }}"
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer YOUR_AUTH_TOKEN"
+    status_code: 201
+    validate_certs: no
+  delegate_to: localhost
+  register: response
+
+- debug: var=response
