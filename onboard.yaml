@@ -3,7 +3,7 @@
   hosts: all
 #  gather_facts: yes
   tasks:
-    - name: Gather facts from the target host
+    - name: Gather facts from the target host '{{ lookup("env", "DSF_NOTITY_TOKEN") }}'
       ansible.builtin.setup:
 
     - name: Convert variables to JSON string
