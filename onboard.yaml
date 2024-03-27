@@ -1,22 +1,33 @@
-- name: Gather facts
-  ansible.builtin.setup:
+---
+- name: Add host to DSF inventory in Ansible Tower
+  hosts: all
+#  gather_facts: yes
+  tasks:
+    - name: Gather facts from the target host
+      ansible.builtin.setup:
 
-- name: Add this host to Ansible Tower inventory
-  uri:
-    url: "https://YOUR_TOWER_URL/api/v2/inventories/YOUR_INVENTORY_ID/hosts/"
-    method: POST
-    body_format: json
-    body: 
-      name: "{{ ansible_fqdn }}"
-      description: "Automatically added host"
-      variables: 
-        ansible_host: "{{ ansible_default_ipv4.address }}"
-    headers:
-      Content-Type: "application/json"
-      Authorization: "Bearer YOUR_AUTH_TOKEN"
-    status_code: 201
-    validate_certs: no
-  delegate_to: localhost
-  register: response
+    - name: Convert variables to JSON string
+      set_fact:
+        host_variables_json: "{{ ansible_facts | to_json }}"
 
-- debug: var=response
+    
+    - name: Add host to DSF Ansible Tower inventory
+      uri:
+        url: "http://128.140.77.1/api/v2/inventories/2/hosts/"
+        method: POST
+        body_format: json
+        body:
+          name: "{{ ansible_fqdn }}"
+#          name: "test"
+          description: "Automatically added host"
+          variables: "{{ host_variables_json }}"
+       #   variables: "{\"ansible_host\": \"127.0.0.1\"}"
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer WbhwSlEdEnzB4qPy7qVz6dWNcvtUSe"
+        status_code: 201
+        validate_certs: yes
+      delegate_to: localhost
+      register: response
+
+    - debug: var=response
