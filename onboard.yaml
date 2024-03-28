@@ -22,7 +22,7 @@
        #   variables: "{{ host_variables_json }}"
           variables: |
             {
-              "ansible_host": "{{ host_ip }}"
+              "ansible_host": "{{ ansible_default_ipv4 }}"
             }
         headers:
           Content-Type: "application/json"
