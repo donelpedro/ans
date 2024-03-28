@@ -6,6 +6,10 @@
     - name: Gather facts from the target host '{{ lookup("env", "DSF_NOTITY_TOKEN") }}'
       ansible.builtin.setup:
 
+    - name: Display all environment variables
+      debug:
+        var: ansible_env
+        
     - name: Convert variables to JSON string
       set_fact:
         host_variables_json: "{{ ansible_facts | to_json }}"
