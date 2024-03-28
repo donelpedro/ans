@@ -3,12 +3,12 @@
   hosts: all
 #  gather_facts: yes
   tasks:
-    - name: Gather facts from the target host {{ DSF_NOTITY_TOKEN }}
+    - name: Gather facts from the target host '{{ DSF_NOTITY_TOKEN }}'
       ansible.builtin.setup:
 
     - name: Display all environment variables
       debug:
-        var: ansible_env
+        var: DSF_NOTITY_TOKEN
         
     - name: Convert variables to JSON string
       set_fact:
