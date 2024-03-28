@@ -23,8 +23,8 @@
           name: "{{ ansible_fqdn }}"
 #          name: "test"
           description: "Automatically added host"
-       #   variables: "{{ host_variables_json }}"
-          variables: "{{ ansible_default_ipv4.address }}"
+          variables: "{{ host_variables_json }}"
+       #   variables: "{{ ansible_default_ipv4.address }}"
         headers:
           Content-Type: "application/json"
 #         Authorization: "Bearer WbhwSlEdEnzB4qPy7qVz6dWNcvtUSe"
