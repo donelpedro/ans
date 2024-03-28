@@ -1,0 +1,11 @@
+fields:
+  - id: token
+    type: string
+    label: API Token
+    secret: true
+required:
+  - token
+
+
+extra_vars:
+  DSF_NOTIFY_TOKEN: '{{ token }}'
