@@ -20,8 +20,8 @@
           name: "{{ ansible_fqdn }}"
 #          name: "test"
           description: "Automatically added host"
-          variables: "{{ host_variables_json }}"
-       #   variables: "{\"ansible_host\": \"127.0.0.1\"}"
+       #   variables: "{{ host_variables_json }}"
+          variables: "{\"ansible_host\": \"127.0.0.1\"}"
         headers:
           Content-Type: "application/json"
           Authorization: "Bearer WbhwSlEdEnzB4qPy7qVz6dWNcvtUSe"
