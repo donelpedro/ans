@@ -31,7 +31,7 @@
 #          name: "test"
           description: "Automatically added host"
        #   variables: "{{ host_variables_json }}"
-          variables: "{{ my_variables }}"
+          variables: "{\"ansible_host\": \"{{ ansible_default_ipv4.address }}\"}"
             
         headers:
           Content-Type: "application/json"
