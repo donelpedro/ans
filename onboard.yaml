@@ -3,12 +3,12 @@
   hosts: all
 #  gather_facts: yes
   tasks:
-    - name: Gather facts from the target host '{{ DSF_NOTITY_TOKEN }}'
+    - name: Gather facts from the target host '{{ DSF_NOTIFY_TOKEN }}'
       ansible.builtin.setup:
 
     - name: Display all environment variables
       debug:
-        var: DSF_NOTITY_TOKEN
+        var: DSF_NOTIFY_TOKEN
         
     - name: Convert variables to JSON string
       set_fact:
@@ -29,7 +29,7 @@
         headers:
           Content-Type: "application/json"
           Authorization: "Bearer WbhwSlEdEnzB4qPy7qVz6dWNcvtUSe"
-#         Authorization: "Bearer {{ DSF_NOTITY_TOKEN }}"
+#         Authorization: "Bearer {{ DSF_NOTIFY_TOKEN }}"
         status_code: 201
         validate_certs: yes
       delegate_to: localhost
