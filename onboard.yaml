@@ -6,21 +6,6 @@
     - name: Gather facts from the target host 
       ansible.builtin.setup:
       
-    - name: Use the IP address from facts
-      debug:
-        msg: "The host's IP address is {{ ansible_default_ipv4.address }}"    
-    
-    - name: Convert variables to JSON string
-      set_fact:
-        host_variables_json: "{{ ansible_facts | to_json }}"
-
-    - name: Set variables as a JSON string
-      set_fact:
-        my_variables: |
-          {
-          "ansible_host": "{{ ansible_default_ipv4.address }}"
-          }
-
     - name: Add host to DSF Ansible Tower inventory
       uri:
         url: "http://128.140.77.1/api/v2/inventories/2/hosts/"
@@ -36,7 +21,6 @@
            }}
         headers:
           Content-Type: "application/json"
-#         Authorization: "Bearer WbhwSlEdEnzB4qPy7qVz6dWNcvtUSe"
           Authorization: "Bearer {{ DSF_NOTIFY_TOKEN }}"
         status_code: 201
         validate_certs: yes
