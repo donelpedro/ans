@@ -27,11 +27,13 @@
         method: POST
         body_format: json
         body: >
-          {
-            "name": "example_host",
-            "description": "Automatically added host",
-            "variables": "{{ {'ansible_host': ansible_default_ipv4.address} | to_json }}"
-          }
+          {{
+            {
+              "name": "example_host",
+              "description": "Automatically added host",
+              "variables": {"ansible_host": ansible_default_ipv4.address} | to_json
+            } | to_json
+           }}
         headers:
           Content-Type: "application/json"
 #         Authorization: "Bearer WbhwSlEdEnzB4qPy7qVz6dWNcvtUSe"
