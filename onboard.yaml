@@ -29,7 +29,7 @@
         body: >
           {{
             {
-              "name": "example_host",
+              "name": ansible_fqdn,
               "description": "Automatically added host",
               "variables": {"ansible_host": ansible_default_ipv4.address} | to_json
             } | to_json
