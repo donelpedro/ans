@@ -28,8 +28,8 @@
           variables: "{\"ansible_host\": \"127.0.0.1\"}"
         headers:
           Content-Type: "application/json"
-          Authorization: "Bearer WbhwSlEdEnzB4qPy7qVz6dWNcvtUSe"
-#         Authorization: "Bearer {{ DSF_NOTIFY_TOKEN }}"
+#         Authorization: "Bearer WbhwSlEdEnzB4qPy7qVz6dWNcvtUSe"
+         Authorization: "Bearer {{ DSF_NOTIFY_TOKEN }}"
         status_code: 201
         validate_certs: yes
       delegate_to: localhost
