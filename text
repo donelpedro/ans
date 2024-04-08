@@ -9,3 +9,22 @@ required:
 
 extra_vars:
   DSF_NOTIFY_TOKEN: '{{ token }}'
+
+
+
+
+
+
+Integration with DSF project
+
+1.    Merge the pull request to QA branch on bitbucket
+2.    Take assistance from Automation Operations team who has access to create/modify/update project, inventory and templates on Ansible test tower Project "RHEL8 Build"  to be updated in ansible test tower post code is merged into QA branch
+
+The change doesn't have any impact on business process as it is designed and developed within the approved framework of automation processes.
+No Impact in performing this change.
+
+Pull requests.
+Evidence will be recorded before and after the change implementation
+
+
+There will be no roll back plan as it is enhancements on build
