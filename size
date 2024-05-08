@@ -1,0 +1,6 @@
+# Default dictionary of filesystem mounts with size specification
+nvs_linux_core_filesystem_mounts:
+  foobar:
+    path: /foo
+    src: /dev/myvg/my_lv
+    size: 1G  # Define the size of the logical volume
