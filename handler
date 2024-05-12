@@ -1,0 +1,10 @@
+---
+# Handlers for mount changes
+- name: Mount changes
+  ansible.builtin.mount:
+    path: "{{ item.value.path }}"
+    src: "{{ item.value.src }}"
+    fstype: ext4  # Assuming ext4, adjust as necessary
+    opts: remount
+    state: mounted
+  loop: "{{ nvs_linux_core_filesystem_mounts | dict2items }}"
