@@ -1,27 +1,35 @@
 ---
-# Tasks to manage filesystem mounts, sizes, and removal of unlisted filesystems
+# Tasks to manage filesystem mounts, sizes, fstypes, and swap
 - name: Ensure the filesystems are correctly managed
   block:
-    - name: Gather mounted filesystems
+    - name: Gather mounted filesystems and swaps
       ansible.builtin.setup:
         gather_subset:
           - "mounts"
 
-    - name: Define list of managed paths from dictionary
+    - name: Define list of managed paths and sources from dictionary
       set_fact:
         managed_paths: "{{ nvs_linux_core_filesystem_mounts | dict2items | map(attribute='value.path') | list }}"
         managed_sources: "{{ nvs_linux_core_filesystem_mounts | dict2items | map(attribute='value.src') | list }}"
 
-    - name: Remove unlisted filesystems
+    - name: Remove unlisted filesystems and swaps
       ansible.builtin.mount:
         path: "{{ item.mount }}"
         src: "{{ item.device }}"
         fstype: "{{ item.fstype }}"
         state: absent
       loop: "{{ ansible_mounts }}"
-      when: item.mount not in managed_paths and item.device not in managed_sources
+      when: item.mount not in managed_paths and item.device not in managed_sources and item.fstype != 'swap'
+      register: unmounted
 
-    - name: Create or resize logical volume for LVM paths
+    - name: Disable unlisted swaps
+      ansible.builtin.swapfile:
+        path: "{{ item.device }}"
+        state: absent
+      loop: "{{ ansible_mounts }}"
+      when: item.mount == 'none' and item.device not in managed_sources and item.fstype == 'swap'
+
+    - name: Create or resize logical volume for LVM paths or partitions
       community.general.lvol:
         vg: "{{ item.value.src | regex_replace('/dev/(.*)/.*', '\\1') }}"
         lv: "{{ item.value.src | regex_replace('/dev/.*/(.*)', '\\1') }}"
@@ -29,14 +37,17 @@
         resizefs: yes
         state: present
       loop: "{{ nvs_linux_core_filesystem_mounts | dict2items }}"
-      when: item.value.src is match("/dev/.*/.*")
+      when: item.value.src is match("/dev/.*/.*") and item.value.swap != true
 
-    - name: Ensure partition is ready for non-LVM paths (if necessary)
-      block:
-        # Additional tasks if pre-processing for partitions is required
-      when: item.value.src is match("/dev/sd[a-z][1-9]")
+    - name: Create swap area
+      ansible.builtin.swapfile:
+        path: "{{ item.value.src }}"
+        size: "{{ item.value.size }}"
+        state: present
+      loop: "{{ nvs_linux_core_filesystem_mounts | dict2items }}"
+      when: item.value.swap == true
 
-    - name: Create mount point
+    - name: Create mount point for filesystems
       ansible.builtin.file:
         path: "{{ item.value.path }}"
         state: directory
@@ -44,14 +55,18 @@
         group: root
         mode: '0755'
       loop: "{{ nvs_linux_core_filesystem_mounts | dict2items }}"
+      when: item.value.swap != true
 
     - name: Mount the filesystem
       ansible.builtin.mount:
         path: "{{ item.value.path }}"
         src: "{{ item.value.src }}"
-        fstype: ext4  # Assuming ext4, adjust as necessary
+        fstype: "{{ item.value.fstype }}"
         opts: defaults
         state: mounted
       loop: "{{ nvs_linux_core_filesystem_mounts | dict2items }}"
+      when: item.value.swap != true
       notify: Mount changes
+      register: filesystem_mounted
+
   when: nvs_linux_core_filesystem_mounts is defined
