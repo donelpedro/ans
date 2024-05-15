@@ -1,0 +1,8 @@
+---
+- name: "Manage Swap Space"
+  include_tasks: "{{ item }}"
+  with_items:
+    - "setup_swap_file.yml"
+    - "setup_swap_partition.yml"
+    - "setup_swap_lvm.yml"
+  when: nvs_linux_core_filesystem.swap.fstype == item.split('_')[2][:-4]

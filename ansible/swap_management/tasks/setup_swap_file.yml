@@ -1,0 +1,17 @@
+---
+- name: Create swap file if it doesn't exist
+  command: "dd if=/dev/zero of={{ nvs_linux_core_filesystem.swap.path }} bs=1M count={{ nvs_linux_core_filesystem.swap.size | regex_replace('G', '1024') }}"
+  when: not ansible_swap_file.stat.exists
+
+- name: Setting up swap area
+  command: "mkswap {{ nvs_linux_core_filesystem.swap.path }}"
+
+- name: Adding swap to fstab
+  lineinfile:
+    path: "/etc/fstab"
+    line: "{{ nvs_linux_core_filesystem.swap.path }} none swap sw 0 0"
+    create: yes
+    state: present
+
+- name: Enabling swap file
+  command: "swapon {{ nvs_linux_core_filesystem.swap.path }}"

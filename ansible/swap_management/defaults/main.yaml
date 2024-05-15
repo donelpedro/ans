@@ -1,0 +1,7 @@
+---
+# defaults file for swap_management
+nvs_linux_core_filesystem:
+  swap:
+    path: "/swapfile"  # Can be a path to a file, device, or LVM logical volume
+    size: "1G"
+    fstype: "file"  # Can be 'file', 'partition', or 'lvm'

@@ -1,0 +1,20 @@
+---
+- name: Create swap logical volume if it doesn't exist
+  lvol:
+    vg: "{{ nvs_linux_core_filesystem.swap.path.split('/')[2] }}"
+    lv: "{{ nvs_linux_core_filesystem.swap.path.split('/')[3] }}"
+    size: "{{ nvs_linux_core_filesystem.swap.size }}"
+    state: present
+
+- name: Make swap on LV
+  command: "mkswap {{ nvs_linux_core_filesystem.swap.path }}"
+
+- name: Add swap LV to fstab
+  lineinfile:
+    path: "/etc/fstab"
+    line: "{{ nvs_linux_core_filesystem.swap.path }} none swap sw 0 0"
+    create: yes
+    state: present
+
+- name: Enabling swap LV
+  command: "swapon {{ nvs_linux_core_filesystem.swap.path }}"

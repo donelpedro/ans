@@ -1,0 +1,17 @@
+---
+# - name: Setting up swap area on partition
+#   command: "mkswap {{ nvs_linux_core_filesystem.swap.path }}"
+
+# - name: Adding swap partition to fstab
+#   lineinfile:
+#     path: "/etc/fstab"
+#     line: "{{ nvs_linux_core_filesystem.swap.path }} none swap sw 0 0"
+#     create: yes
+#     state: present
+
+# - name: Enabling swap partition
+#   command: "swapon {{ nvs_linux_core_filesystem.swap.path }}"
+
+
+- debug:
+    msg: "swap partition"
