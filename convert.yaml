@@ -1,0 +1,8 @@
+    - name: Convert size to bytes
+      set_fact:
+        size_in_bytes: >-
+          {{
+            (size_variable | regex_replace('G$', '000000000') | int) if 'G' in size_variable |
+            upper else (size_url | regex_replace('M$', '000000') | int) if 'M' in size_variable |
+            upper else (size_variable | int)
+          }}
