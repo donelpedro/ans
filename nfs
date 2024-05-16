@@ -1,0 +1,32 @@
+# defaults/main.yml
+nfs_mounts:
+  - remote_hostname: "example-nfs-host1"
+    path: "/remote/nfs1"
+    mount_point: "/local/mount1"
+    options: "defaults"
+  - remote_hostname: "example-nfs-host2"
+    path: "/remote/nfs2"
+    mount_point: "/local/mount2"
+    options: "defaults"
+
+---
+# tasks/main.yml
+- name: Ensure NFS utilities are installed
+  ansible.builtin.package:
+    name: nfs-common
+    state: present
+
+- name: Create mount directories
+  ansible.builtin.file:
+    path: "{{ item.mount_point }}"
+    state: directory
+  loop: "{{ nfs_mounts }}"
+
+- name: Add NFS mounts to fstab and mount them
+  ansible.builtin.mount:
+    path: "{{ item.mount_point }}"
+    src: "{{ item.remote_hostname }}:{{ item.path }}"
+    fstype: nfs
+    opts: "{{ item.options }}"
+    state: mounted
+  loop: "{{ nfs_mounts }}"
