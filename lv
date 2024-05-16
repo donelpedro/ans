@@ -1,0 +1,10 @@
+- name: Create Logical Volume
+  community.general.lvol:
+    vg: "{{ item.vg }}"
+    lv: "{{ item.lv }}"
+    size: "{{ item.size }}"
+    state: present
+  loop: "{{ QM_NAME }}"
+  when: item.lv is defined
+
+ansible-playbook playbook.yml -e "QM_NAME=[{'vg': 'vg1', 'lv': 'qm_name1', 'size': '4G'}, {'vg': 'vg2', 'lv': 'qm_name2', 'size': '4G'}]"
