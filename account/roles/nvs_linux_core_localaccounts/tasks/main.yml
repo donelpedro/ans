@@ -1,4 +1,13 @@
 ---
+---
+- name: Ensure all groups are managed
+  ansible.builtin.group:
+    name: "{{ item.key }}"
+    gid: "{{ item.value.gid }}"
+    state: "{{ item.value.state }}"
+  loop: "{{ lookup('dict', nvs_linux_core_localgroups) }}"
+  when: nvs_linux_core_localgroups is defined
+
 - name: Ensure all user accounts are managed
   ansible.builtin.user:
     name: "{{ item.value.name }}"
