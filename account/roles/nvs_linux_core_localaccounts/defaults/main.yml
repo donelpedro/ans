@@ -19,3 +19,16 @@ nvs_linux_core_localaccounts:
     expires: -1  # Never expires. Set to a specific epoch time for an expiry date.
     skeleton: "/etc/skel"
 
+nvs_linux_core_localgroups:
+  dba:
+    gid: "1500"
+    state: "present"
+  stuff:
+    gid: "1501"
+    state: "present"
+  wheel:
+    gid: "1502"
+    state: "present"
+  etc:
+    gid: "1503"
+    state: "present"
