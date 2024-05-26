@@ -1,0 +1,20 @@
+---
+- name: Ensure all user accounts are managed
+  ansible.builtin.user:
+    name: "{{ item.value.name }}"
+    uid: "{{ item.value.uid }}"
+    home: "{{ item.value.home }}"
+    shell: "{{ item.value.shell }}"
+    group: "{{ item.value.group }}"
+    groups: "{{ item.value.groups | join(',') }}"
+    create_home: "{{ item.value.create_home }}"
+    password: "{{ item.value.password }}"
+    system: "{{ item.value.system }}"
+    state: "{{ item.value.state }}"
+    remove: "{{ item.value.remove }}"
+    non_unique: "{{ item.value.non_unique }}"
+    comment: "{{ item.value.comment }}"
+    expires: "{{ item.value.expires }}"
+    skeleton: "{{ item.value.skeleton }}"
+  loop: "{{ lookup('dict', nvs_linux_core_localaccounts) }}"
+

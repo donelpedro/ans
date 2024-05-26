@@ -1,0 +1,21 @@
+nvs_linux_core_localaccounts:
+  oracle:
+    name: "oracle"
+    uid: "1001"
+    home: "/home/oracle"
+    shell: "/bin/bash"
+    group: "dba"
+    groups:
+      - "stuff"
+      - "wheel"
+      - "etc"
+    create_home: yes
+    password: "{{ 'password_here' | password_hash('sha512') }}"
+    system: no
+    state: "present"
+    remove: no
+    non_unique: no
+    comment: "Oracle User Account"
+    expires: -1  # Never expires. Set to a specific epoch time for an expiry date.
+    skeleton: "/etc/skel"
+

@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Ensure Python passlib is installed (required for password hashing)
+      ansible.builtin.pip:
+        name: passlib
+
+  roles:
+    - nvs_linux_core_localaccounts
+
