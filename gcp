@@ -39,6 +39,13 @@ source "googlecompute" "rh9_image" {
 }
 
 build {
+  required_plugins {
+    googlecompute = {
+      version = ">= 2.0.0"
+      source  = "github.com/hashicorp/googlecompute"
+    }
+  }
+
   sources = ["source.googlecompute.rh9_image"]
 
   provisioner "shell" {
