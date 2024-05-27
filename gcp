@@ -1,0 +1,52 @@
+variable "project_id" {
+  type    = string
+  default = "your-project-id"
+}
+
+variable "zone" {
+  type    = string
+  default = "us-central1-a"
+}
+
+variable "source_image_family" {
+  type    = string
+  default = "debian-9"
+}
+
+variable "ssh_username" {
+  type    = string
+  default = "root"
+}
+
+variable "machine_type" {
+  type    = string
+  default = "n1-standard-1"
+}
+
+locals {
+  rh9_image_name = "rh9-image-${timestamp()}"
+}
+
+source "googlecompute" "rh9_image" {
+  project_id        = var.project_id
+  source_image_family = var.source_image_family
+  zone             = var.zone
+  machine_type     = var.machine_type
+  ssh_username     = var.ssh_username
+  image_name       = local.rh9_image_name
+  image_description = "Red Hat 9 Image built with Packer"
+  image_family     = "rh9"
+}
+
+build {
+  sources = ["source.googlecompute.rh9_image"]
+
+  provisioner "shell" {
+    inline = [
+      "echo 'Installing Red Hat 9 packages...'",
+      "apt-get update",
+      "apt-get install -y redhat-package1 redhat-package2",
+      "echo 'Red Hat 9 packages installed.'"
+    ]
+  }
+}
