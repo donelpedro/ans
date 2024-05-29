@@ -1,0 +1,1 @@
+name: "{{ (layer | default('') | trim == '') | ternary(item.value.name, layer | lower ~ '_' ~ item.value.name) }}"
