@@ -1,0 +1,26 @@
+---
+- name: Ensure sticky bit is set on mount points and their parent directories if world writable
+  hosts: all
+  become: yes
+  tasks:
+    - name: Get  mount points
+      ansible.builtin.shell: mount | awk '{print $3}' (df etc)
+      register: mounts
+
+    - name: Check if mount points and parent directories are world writable
+      ansible.builtin.find:
+        paths: "{{ item }}"
+        recurse: no
+        file_type: directory
+        mode: "go+w"
+      register: world_writable_mounts
+      with_items: "{{ mounts.stdout_lines }}"
+      loop_control:
+        label: "{{ item }}"
+
+    - name: Set sticky bit on world writable mount points and their parents
+      ansible.builtin.file:
+        path: "{{ item.item }}"
+        mode: u+t
+      with_items: "{{ world_writable_mounts.results }}"
+      when: item.matched > 0
