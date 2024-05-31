@@ -1,0 +1,9 @@
+- name: set name servers and search domains
+  ansible.builtin.set_fact:
+    _name_servers: "{{ nvs_linux_core_dns.domains | json_query(_query_name_servers_site) | default(nvs_linux_core_dns.domains | json_query(_query_name_servers_all), True) }}"
+    _search_domains: "{{ nvs_linux_core_dns.domains | json_query(_query_search_domains_site) | default(nvs_linux_core_dns.domains | json_query(_query_search_domains_all), True) }}"
+  vars:
+    _query_name_servers_site: "[?name == '{{ ansible_domain }}'].sites.{{ site }}.name_servers | []"
+    _query_name_servers_all: "[?name == '{{ ansible_domain }}'].sites._all.name_servers | []"
+    _query_search_domains_site: "[?name == '{{ ansible_domain }}'].sites.{{ site }}.search_domains | []"
+    _query_search_domains_all: "[?name == '{{ ansible_domain }}'].sites._all.search_domains | []"
