@@ -1,0 +1,22 @@
+---
+- name: Install firewall software
+  yum:
+    name: "{{ firewall_package_name }}"
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: Ensure firewall service is running and enabled
+  service:
+    name: "{{ firewall_service_name }}"
+    state: started
+    enabled: true
+
+- name: Configure firewall rules
+  firewalld:
+    service: "{{ item.service | default(omit) }}"
+    port: "{{ item.port | default(omit) }}"
+    state: "{{ item.state }}"
+    permanent: "{{ item.permanent }}"
+    immediate: "{{ item.immediate }}"
+  loop: "{{ firewall_rules }}"
+  notify: Restart firewall service 
