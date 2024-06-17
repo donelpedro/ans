@@ -1,0 +1,16 @@
+---
+firewall_package_name: firewalld
+firewall_service_name: firewalld
+firewall_rules:
+  - service: http
+    state: enabled
+    permanent: true
+    immediate: true
+  - service: https
+    state: enabled
+    permanent: true
+    immediate: true
+  - port: 8080/tcp
+    state: enabled
+    permanent: true
+    immediate: true
