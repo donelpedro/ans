@@ -20,3 +20,13 @@
     immediate: "{{ item.immediate }}"
   loop: "{{ firewall_rules }}"
   notify: Restart firewall service 
+
+
+- name: Set up port forwarding
+  firewalld:
+    rich_rule: "rule family='ipv4' forward-port port='{{ item.src_port }}' protocol='{{ item.protocol }}' to-port='{{ item.dest_port }}'"
+    permanent: "{{ item.permanent }}"
+    state: "{{ item.state }}"
+    zone: "{{ item.zone }}"
+  loop: "{{ port_forwarding_rules }}"
+  notify: Restart firewall service
