@@ -1,0 +1,14 @@
+---
+firewall_package_name: firewalld
+firewall_service_name: firewalld
+firewall_zones: 
+  - name: public
+    state: drop
+    interfaces: []
+    services: ['ssh']
+    ports: ['5308/tcp', '8400/tcp', '8403/tcp', '8405/tcp', '8408/tcp', '7105/tcp', '7105/udp', '7106/tcp', '7106/udp', '33221/tcp', '33221/udp']
+    rich_rules:
+      - "rule family='ipv4' source address='127.0.0.0/8' drop"
+      - "rule family='ipv4' state state=ESTABLISHED,RELATED accept"
+      - "rule protocol value='icmp' accept"
+firewall_allow_icmp: true
