@@ -1,0 +1,40 @@
+#!/usr/bin/python
+
+from ansible.module_utils.basic import AnsibleModule
+
+def run_module():
+    module_args = dict(
+        ports=dict(type='list', required=True),
+        state=dict(type='str', required=False, default='opened', choices=['opened', 'closed'])
+    )
+
+    result = dict(
+        changed=False,
+        original_message='',
+        message=''
+    )
+
+    module = AnsibleModule(
+        argument_spec=module_args,
+        supports_check_mode=True
+    )
+
+    ports = module.params['ports']
+    state = module.params['state']
+
+    if module.check_mode:
+        module.exit_json(**result)
+
+    # Example logic to handle port opening/closing
+    for port in ports:
+        # This is where the actual logic would go to open/close ports
+        result['changed'] = True
+        result['message'] += f"Port {port} has been {state}.\n"
+
+    module.exit_json(**result)
+
+def main():
+    run_module()
+
+if __name__ == '__main__':
+    main()
