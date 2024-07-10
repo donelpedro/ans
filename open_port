@@ -31,13 +31,14 @@ def run_module():
 
     # Ensure the EXTRA_PORTS zone exists
     try:
-        subprocess.run(['firewall-cmd', '--permanent', '--new-zone={}'.format(zone)], check=True)
-        result['changed'] = True
-        result['message'] += f"Zone {zone} created.\n"
-        subprocess.run(['firewall-cmd', '--reload'], check=True)
+        zone_exists = subprocess.run(['firewall-cmd', '--permanent', '--get-zones'], check=True, capture_output=True, text=True)
+        if zone not in zone_exists.stdout:
+            subprocess.run(['firewall-cmd', '--permanent', '--new-zone={}'.format(zone)], check=True)
+            result['changed'] = True
+            result['message'] += f"Zone {zone} created.\n"
+            subprocess.run(['firewall-cmd', '--reload'], check=True)
     except subprocess.CalledProcessError as e:
-        if 'ZONE_CONFLICT' not in str(e):
-            module.fail_json(msg=f"Failed to create zone {zone}: {str(e)}", **result)
+        module.fail_json(msg=f"Failed to check or create zone {zone}: {str(e)}", **result)
 
     for port in ports:
         cmd = ['firewall-cmd', '--zone={}'.format(zone), '--add-port={}/tcp'.format(port)]
