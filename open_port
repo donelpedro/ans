@@ -13,7 +13,8 @@ def run_module():
     result = dict(
         changed=False,
         original_message='',
-        message=''
+        message='',
+        params=dict()  # This will hold all input parameters for reporting
     )
 
     module = AnsibleModule(
@@ -25,6 +26,13 @@ def run_module():
     state = module.params['state']
     permanent = module.params['permanent']
     zone = 'EXTRA_PORTS'
+
+    # Store all input parameters in result
+    result['params'] = {
+        'ports': ports,
+        'state': state,
+        'permanent': permanent
+    }
 
     if module.check_mode:
         module.exit_json(**result)
