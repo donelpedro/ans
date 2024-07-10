@@ -24,21 +24,32 @@ def run_module():
     ports = module.params['ports']
     state = module.params['state']
     permanent = module.params['permanent']
+    zone = 'EXTRA_PORTS'
 
     if module.check_mode:
         module.exit_json(**result)
 
+    # Ensure the EXTRA_PORTS zone exists
+    try:
+        subprocess.run(['firewall-cmd', '--permanent', '--new-zone={}'.format(zone)], check=True)
+        result['changed'] = True
+        result['message'] += f"Zone {zone} created.\n"
+        subprocess.run(['firewall-cmd', '--reload'], check=True)
+    except subprocess.CalledProcessError as e:
+        if 'ZONE_CONFLICT' not in str(e):
+            module.fail_json(msg=f"Failed to create zone {zone}: {str(e)}", **result)
+
     for port in ports:
-        cmd = ['firewall-cmd', '--add-port={}/tcp'.format(port)]
+        cmd = ['firewall-cmd', '--zone={}'.format(zone), '--add-port={}/tcp'.format(port)]
         if permanent:
             cmd.append('--permanent')
         if state == 'closed':
-            cmd[1] = cmd[1].replace('--add', '--remove')
+            cmd[2] = cmd[2].replace('--add', '--remove')
 
         try:
             subprocess.run(cmd, check=True)
             result['changed'] = True
-            result['message'] += f"Port {port} has been {state}.\n"
+            result['message'] += f"Port {port} has been {state} in zone {zone}.\n"
         except subprocess.CalledProcessError as e:
             module.fail_json(msg=f"Failed to change state of port {port}: {str(e)}", **result)
 
