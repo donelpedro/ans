@@ -44,7 +44,7 @@ def run_module():
             subprocess.run(['firewall-cmd', '--permanent', '--new-zone={}'.format(zone)], check=True)
             result['changed'] = True
             result['message'] += f"Zone {zone} created.\n"
-            subprocess.run(['firewall-cmd', '--reload'], check=True)
+            reload_firewalld(result)  # Attempt to reload firewalld after creating the zone
     except subprocess.CalledProcessError as e:
         module.fail_json(msg=f"Failed to check or create zone {zone}: {str(e)}", **result)
 
@@ -62,7 +62,17 @@ def run_module():
         except subprocess.CalledProcessError as e:
             module.fail_json(msg=f"Failed to change state of port {port}: {str(e)}", **result)
 
+    reload_firewalld(result)  # Attempt to reload firewalld after making changes to ports
+
     module.exit_json(**result)
+
+def reload_firewalld(result):
+    try:
+        subprocess.run(['firewall-cmd', '--reload'], check=True)
+        result['message'] += "Firewalld reloaded successfully.\n"
+    except subprocess.CalledProcessError as e:
+        result['message'] += f"Failed to reload firewalld: {str(e)}.\n"
+        # Optionally: You can set result['changed'] to False here if you want to indicate the overall operation failed
 
 def main():
     run_module()
